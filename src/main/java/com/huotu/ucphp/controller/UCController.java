@@ -2,6 +2,8 @@ package com.huotu.ucphp.controller;
 
 import com.huotu.ucphp.service.UCUserService;
 import com.huotu.ucphp.util.AuthCodeUtil;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +20,7 @@ import java.util.Map;
 @Controller
 public class UCController {
 
+    private static final Log log = LogFactory.getLog(UCController.class);
     public static boolean API_SYNLOGIN=true;		//note 同步登录 API 接口开关
     public static boolean API_SYNLOGOUT=true;		//note 同步登出 API 接口开关
 
@@ -37,6 +40,7 @@ public class UCController {
     @RequestMapping("/uCenter/**")
     public void doRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String requestMapping = request.getParameter("a");
+        log.info(requestMapping);
         if ("logincheck".equals(requestMapping)) { //同步登录
 
             String code = request.getParameter("input");
@@ -81,7 +85,7 @@ public class UCController {
             Cookie user = new Cookie("loginuser",get.get("username"));
             user.setMaxAge(cookietime);
             response.addCookie(user);
-        } else if ("logincheck".equals(requestMapping)){ //同步登出
+        } else{ //同步登出
             String code = request.getParameter("input");
             code = code.replace(' ', '+');
             if (code == null) {

@@ -5,8 +5,6 @@ import com.huotu.ucphp.config.UCenterConfig;
 import com.huotu.ucphp.util.AuthCodeUtil;
 import me.jiangcai.lib.test.SpringWebTest;
 import org.junit.Test;
-import org.springframework.mock.web.portlet.MockActionResponse;
-import org.springframework.mock.web.portlet.MockEventResponse;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;

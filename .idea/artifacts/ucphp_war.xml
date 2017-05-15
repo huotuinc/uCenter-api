@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="ucphp:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="ucphp-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="ucphp:war exploded" />
+    </root>
+  </artifact>
+</component>

@@ -10,7 +10,11 @@ import org.springframework.stereotype.Service;
 public class UCUserServiceImpl implements UCUserService {
 
     public boolean validUser(String username, String password) {
-        //
+        return true;
+    }
+
+    @Override
+    public boolean userCheck(String username) {
         return true;
     }
 }

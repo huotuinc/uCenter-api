@@ -22,7 +22,7 @@ public class UCControllerTest extends BaseTest {
     @Test
     public void synlogin() throws Exception {
 
-        System.out.println(environment.getProperty("testName"));
+        //System.out.println(environment.getProperty("testName"));
 
         //content时间过时
         mockMvc.perform(MockMvcRequestBuilders.post("/uCenter/index.php?__times__=1")
@@ -48,7 +48,6 @@ public class UCControllerTest extends BaseTest {
                         .param("release", "20170101")
                         .param("input", afStr)
                         .param("appid", "1")
-//                .content("m=user&a=logincheck&inajax=2&release=20170101&input="+ afStr +"&appid=1")
         )
                 .andExpect(MockMvcResultMatchers.cookie().exists("loginuser"));
 

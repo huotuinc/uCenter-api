@@ -5,6 +5,7 @@ import com.huotu.ucphp.util.AuthCodeUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,6 +34,8 @@ public class UCController {
 
     @Autowired
     private UCUserService ucUserService;
+    @Autowired
+    private Environment environment;
 
     /**
      * 同步登录
@@ -46,9 +49,8 @@ public class UCController {
         log.info("RequestContent: " + requestMapping);
 
         Map<String, String> get = new HashMap<>();
-        //code =  new UCUtil().uc_authcode(code, "DECODE", null, 0);
-        //new PHP().auth(code,"testKeyJustForForever");
-        code = AuthCodeUtil.authcodeDecode(code, "testKeyJustForForever");
+        String key = environment.getProperty("uCenterKey");
+        code = AuthCodeUtil.authcodeDecode(code, key);
         log.info("afterDecode: " + code);
         parse_str(code, get);
 
@@ -64,6 +66,12 @@ public class UCController {
 
             if(!API_SYNLOGIN ) {
                 response.getWriter().print(API_RETURN_FORBIDDEN);
+                return;
+            }
+
+            String username = get.get("username");
+            if (!ucUserService.userCheck(username)) {
+                response.getWriter().print(API_RETURN_FAILED);
                 return;
             }
 

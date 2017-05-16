@@ -73,5 +73,18 @@
         </repository>
     </repositories>
 
+    <distributionManagement>
+        <repository>
+            <id>huotu-nexus</id>
+            <name>Nexus Release Repository</name>
+            <url>http://repo.51flashmall.com:8081/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>huotu-nexus</id>
+            <name>Nexus Snapshot Repository</name>
+            <url>http://repo.51flashmall.com:8081/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
 
 </project>

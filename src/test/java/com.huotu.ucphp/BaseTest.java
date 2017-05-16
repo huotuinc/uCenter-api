@@ -2,6 +2,8 @@ package com.huotu.ucphp;
 
 import com.huotu.ucphp.config.UCenterConfig;
 import me.jiangcai.lib.test.SpringWebTest;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
 
@@ -17,9 +19,14 @@ import java.net.URL;
 /**
  * Created by xyr on 2017/5/12.
  */
-@ContextConfiguration(classes = {UCenterConfig.class})
+@ContextConfiguration(classes = {UCenterConfig.class,BaseTest.Config.class})
 @WebAppConfiguration
 public class BaseTest extends SpringWebTest {
+
+    @Configuration
+    @PropertySource("classpath:test_ucenter.properties")
+    static class Config{
+    }
 
     public static String url = "http://bbs.51huotao.com/uc/index.php?__times__=1";
     public static int limit = 500000;

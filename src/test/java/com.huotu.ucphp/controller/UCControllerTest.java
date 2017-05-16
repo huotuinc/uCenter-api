@@ -1,28 +1,28 @@
 package com.huotu.ucphp.controller;
 
 import com.huotu.ucphp.BaseTest;
-import com.huotu.ucphp.config.UCenterConfig;
 import com.huotu.ucphp.util.AuthCodeUtil;
-import me.jiangcai.lib.test.SpringWebTest;
 import org.junit.Test;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.util.DigestUtils;
 
 import java.util.Date;
 
 /**
  * Created by xyr on 2017/5/2.
  */
-@ContextConfiguration(classes = {UCenterConfig.class})
-@WebAppConfiguration
 public class UCControllerTest extends BaseTest {
 
+    @Autowired
+    private Environment environment;
+
     @Test
-    public void  synlogin() throws Exception {
+    public void synlogin() throws Exception {
+
+        System.out.println(environment.getProperty("testName"));
 
         //content时间过时
         mockMvc.perform(MockMvcRequestBuilders.post("/uCenter/index.php?__times__=1")
@@ -41,13 +41,13 @@ public class UCControllerTest extends BaseTest {
         AuthCodeUtil util = new AuthCodeUtil();
         String afStr = util.authcodeEncode(test, key);
         mockMvc.perform(MockMvcRequestBuilders.post("/uCenter/index.php?__times__=1")
-                .contentType("application/x-www-form-urlencoded")
-                .param("m","user")
-                .param("a","logincheck")
-                .param("inajax","2")
-                .param("release","20170101")
-                .param("input",afStr)
-                .param("appid","1")
+                        .contentType("application/x-www-form-urlencoded")
+                        .param("m", "user")
+                        .param("a", "logincheck")
+                        .param("inajax", "2")
+                        .param("release", "20170101")
+                        .param("input", afStr)
+                        .param("appid", "1")
 //                .content("m=user&a=logincheck&inajax=2&release=20170101&input="+ afStr +"&appid=1")
         )
                 .andExpect(MockMvcResultMatchers.cookie().exists("loginuser"));

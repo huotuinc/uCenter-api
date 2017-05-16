@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,43 +41,38 @@ public class UCController {
     @RequestMapping("/uCenter/**")
     public void doRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String requestMapping = request.getParameter("a");
-        log.info(requestMapping);
+        log.info("RequestContent: " + requestMapping);
+
+
+        String code = request.getParameter("input");
+        code = code.replace(' ', '+');
+        if (code == null) {
+            response.getWriter().print(API_RETURN_FAILED);
+            return;
+        }
+
+        Map<String, String> get = new HashMap<String, String>();
+        //code =  new UCUtil().uc_authcode(code, "DECODE", null, 0);
+        //new PHP().auth(code,"testKeyJustForForever");
+        code = new AuthCodeUtil().authcodeDecode(code, "testKeyJustForForever");
+        log.info("afterDecode: " + code);
+        parse_str(code, get);
+
+        if (get.isEmpty()) {
+            response.getWriter().print("Invalid Request");
+            return;
+        }
+        if(time() - tolong(get.get("time")) > 3600) {
+            response.getWriter().print("Authracation has expiried");
+            return;
+        }
         if ("logincheck".equals(requestMapping)) { //同步登录
-
-            String code = request.getParameter("input");
-            code = code.replace(' ', '+');
-            if (code == null) {
-                response.getWriter().print(API_RETURN_FAILED);
-                return;
-            }
-
-            Map<String, String> get = new HashMap<String, String>();
-            //code =  new UCUtil().uc_authcode(code, "DECODE", null, 0);
-            //new PHP().auth(code,"testKeyJustForForever");
-            code = new AuthCodeUtil().authcodeDecode(code, "testKeyJustForForever");
-            parse_str(code, get);
-
-            if (get.isEmpty()) {
-                response.getWriter().print("Invalid Request");
-                return;
-            }
-            if(time() - tolong(get.get("time")) > 3600) {
-                response.getWriter().print("Authracation has expiried");
-                return;
-            }
 
             if(!API_SYNLOGIN ) {
                 response.getWriter().print(API_RETURN_FORBIDDEN);
                 return;
             }
 
-            String username = get.get("username");
-            String password = get.get("password");
-
-            if (!ucUserService.validUser(username, password)) {
-                response.getWriter().print(API_RETURN_FAILED);
-                return;
-            }
             //同步登录 API 接口
             response.addHeader("P3P","CP=\"CURa ADMa DEVa PSAo PSDo OUR BUS UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR\"");
 
@@ -85,27 +81,22 @@ public class UCController {
             Cookie user = new Cookie("loginuser",get.get("username"));
             user.setMaxAge(cookietime);
             response.addCookie(user);
-        } else{ //同步登出
-            String code = request.getParameter("input");
-            code = code.replace(' ', '+');
-            if (code == null) {
+        } else if ("userlogin".equals(requestMapping)) { //登录验证
+
+            String username = get.get("username");
+            String password = get.get("password");
+            //还不太清楚具体流程，暂时那么写
+            if (!ucUserService.validUser(username, password)) {
                 response.getWriter().print(API_RETURN_FAILED);
                 return;
-            }
-
-            Map<String, String> get = new HashMap<String, String>();
-            code =  new AuthCodeUtil().authcodeDecode(code, "");
-            parse_str(code, get);
-
-            if (get.isEmpty()) {
-                response.getWriter().print("Invalid Request");
-                return;
-            }
-            if(time() - tolong(get.get("time")) > 3600) {
-                response.getWriter().print("Authracation has expiried");
+            } else {
+                HttpSession session = request.getSession();
+                session.setAttribute("username", username);
+                session.setAttribute("password", password);
                 return;
             }
 
+        } else{ //同步登出
             if(!API_SYNLOGOUT ) {
                 response.getWriter().print(API_RETURN_FORBIDDEN);
                 return;

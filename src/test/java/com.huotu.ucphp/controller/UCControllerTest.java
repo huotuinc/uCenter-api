@@ -10,6 +10,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.util.DigestUtils;
 
 import java.util.Date;
 
@@ -44,6 +45,7 @@ public class UCControllerTest extends BaseTest {
                 .content("m=user&a=logincheck&inajax=2&release=20170101&input="+ afStr +"&appid=1")
         )
                 .andExpect(MockMvcResultMatchers.cookie().exists("loginuser"));
+
     }
 
     @Test

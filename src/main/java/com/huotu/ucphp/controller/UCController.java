@@ -7,6 +7,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,22 +41,14 @@ public class UCController {
      * @throws IOException
      */
     @RequestMapping("/uCenter/**")
-    public void doRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String requestMapping = request.getParameter("a");
+    public void doRequest(@RequestParam("a") String requestMapping,@RequestParam("input") String code, HttpServletRequest request
+            , HttpServletResponse response) throws IOException {
         log.info("RequestContent: " + requestMapping);
 
-
-        String code = request.getParameter("input");
-        code = code.replace(' ', '+');
-        if (code == null) {
-            response.getWriter().print(API_RETURN_FAILED);
-            return;
-        }
-
-        Map<String, String> get = new HashMap<String, String>();
+        Map<String, String> get = new HashMap<>();
         //code =  new UCUtil().uc_authcode(code, "DECODE", null, 0);
         //new PHP().auth(code,"testKeyJustForForever");
-        code = new AuthCodeUtil().authcodeDecode(code, "testKeyJustForForever");
+        code = AuthCodeUtil.authcodeDecode(code, "testKeyJustForForever");
         log.info("afterDecode: " + code);
         parse_str(code, get);
 

@@ -42,7 +42,13 @@ public class UCControllerTest extends BaseTest {
         String afStr = util.authcodeEncode(test, key);
         mockMvc.perform(MockMvcRequestBuilders.post("/uCenter/index.php?__times__=1")
                 .contentType("application/x-www-form-urlencoded")
-                .content("m=user&a=logincheck&inajax=2&release=20170101&input="+ afStr +"&appid=1")
+                .param("m","user")
+                .param("a","logincheck")
+                .param("inajax","2")
+                .param("release","20170101")
+                .param("input",afStr)
+                .param("appid","1")
+//                .content("m=user&a=logincheck&inajax=2&release=20170101&input="+ afStr +"&appid=1")
         )
                 .andExpect(MockMvcResultMatchers.cookie().exists("loginuser"));
 

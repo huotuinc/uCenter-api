@@ -21,7 +21,7 @@ import java.net.URL;
  */
 @ContextConfiguration(classes = {UCenterConfig.class,BaseTest.Config.class})
 @WebAppConfiguration
-public class BaseTest extends SpringWebTest {
+public abstract class BaseTest extends SpringWebTest {
 
     @Configuration
     @PropertySource("classpath:test_ucenter.properties")
